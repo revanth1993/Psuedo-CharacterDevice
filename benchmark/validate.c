@@ -34,6 +34,14 @@ int main(int argc, char *argv[])
         {
             strcpy(kv[(int)key],data);
             memset(data,0,4096);
+        } else if (op == 'G') {
+            if (strcmp(kv[(int)key], data)) {   
+                fprintf(stderr, "%d: Key %d has a wrong value %s v.s. %s\n",tid,(int)key,data,kv[(int)key]);
+                error++; 
+            }
+        }
+        if (error > 5) {
+            break;
         }
     }
     devfd = open("/dev/keyvalue",O_RDWR);
@@ -51,9 +59,12 @@ int main(int argc, char *argv[])
             fprintf(stderr, "Key %i has a wrong value %s v.s. %s\n",i,data,kv[i]);
             error++;
         }
+        kv_delete(devfd,i);
     }
     if(error==0)
-            fprintf(stderr, "You passed!\n");
+        printf("15\tTest6: Concurrency\n");
+    else
+        printf("0\tTest6: Concurrency\n");
     
     close(devfd);
     return 0;
